@@ -32,14 +32,13 @@ def wait_for_cassandra(host_name, wait_timeout):
         print("Waiting time exceeded, aborting...")
         sys.exit(1)
 
-
-if __name__ == '__main__':
+def run():
     if '-h' in sys.argv:
         print('''Use like:
-        
-wait_for_cassandra <hostname> <wait timeout>
 
-Default hostname is localhost, and default timeout is 300 seconds''')
+    wait_for_cassandra <hostname> <wait timeout>
+
+    Default hostname is localhost, and default timeout is 300 seconds''')
         sys.exit(0)
 
     try:
@@ -54,3 +53,7 @@ Default hostname is localhost, and default timeout is 300 seconds''')
             timeout = 300
 
     wait_for_cassandra(hostname, timeout)
+
+
+if __name__ == '__main__':
+    run()

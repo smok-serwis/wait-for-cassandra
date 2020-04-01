@@ -9,6 +9,6 @@ setup(
         'wait_for_cassandra',
     ],
     entry_points={'console_scripts':
-                                   ['wait-for-cassandra = wait_for_cassandra.run']
+                                   ['wait-for-cassandra = wait_for_cassandra.run:run']
                     }
 )
