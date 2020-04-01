@@ -1,0 +1,14 @@
+services:
+  - cassandra
+language: python
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8"
+  - "pypy3.5"
+before_script:
+  - python setup.py install
+script:
+  - wait-for-cassandra
