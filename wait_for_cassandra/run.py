@@ -1,6 +1,7 @@
 # coding=UTF-8
 from __future__ import print_function
 
+import time
 import cassandra.cluster
 import sys
 
@@ -31,6 +32,7 @@ def wait_for_cassandra(host_name, wait_timeout):
     else:
         print("Waiting time exceeded, aborting...")
         sys.exit(1)
+
 
 def run():
     if '-h' in sys.argv:
