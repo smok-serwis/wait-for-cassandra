@@ -7,7 +7,6 @@ import sys
 
 
 def wait_for_cassandra(host_name, wait_timeout):
-    wait_timeout = wait_timeout or MAXIMUM_WAITING_PERIOD
     start_at = time.time()
     wait_println_counter = 0
     while time.time() - start_at < wait_timeout:
