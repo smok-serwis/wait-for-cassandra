@@ -53,20 +53,16 @@ def run():
     Default hostname is localhost, and default timeout is 300 seconds''')
         sys.exit(0)
 
-    login, password = None, None
-    try:
+    hostname, timeout, login, password = 'localhost', 300, None, None
+
+    if len(sys.argv) == 5:
         _, hostname, timeout, login, password = sys.argv
-    except ValueError:
-        try:
-            _, hostname, timeout = sys.argv
-            timeout = int(timeout)
-        except ValueError:
-            try:
-                _, hostname = sys.argv
-                timeout = 300
-            except ValueError:
-                hostname = 'localhost'
-                timeout = 300
+    elif len(sys.argv) == 3:
+        _, hostname, timeout = sys.argv
+    elif len(sys.argv) == 2:
+        _, hostname = sys.argv
+
+    timeout = float(timeout)
 
     wait_for_cassandra(hostname, timeout, login, password)
 
