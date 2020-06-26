@@ -8,7 +8,8 @@ import sys
 from cassandra.auth import PlainTextAuthProvider
 
 
-def wait_for_cassandra(host_name, wait_timeout, login=None, password=None):
+def wait_for_cassandra(host_name='localhost',
+                       wait_timeout=300, login=None, password=None):
     start_at = time.time()
     wait_println_counter = 0
 

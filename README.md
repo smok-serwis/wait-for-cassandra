@@ -25,3 +25,11 @@ Default hostname is localhost, and default timeout is 5 minutes
 If you need to specify an user and a password, call this tool like this:
 
 `wait-for-cassandra <hostname> <timeout> <login> <password>`
+
+Or alternatively you can use it programmatically:
+
+```python
+from wait_for_cassandra import wait_for_cassandra
+
+wait_for_cassandra('host', 300, 'login', 'password')
+```
