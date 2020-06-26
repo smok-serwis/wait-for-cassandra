@@ -5,10 +5,17 @@ import time
 import cassandra.cluster
 import sys
 
+from cassandra.auth import PlainTextAuthProvider
 
-def wait_for_cassandra(host_name, wait_timeout):
+
+def wait_for_cassandra(host_name, wait_timeout, login=None, password=None):
     start_at = time.time()
     wait_println_counter = 0
+
+    auth_provider = None
+    if login is not None and password is not None:
+        auth_provider = PlainTextAuthProvider(username=login, password=password)
+
     while time.time() - start_at < wait_timeout:
         try:
             cluster = cassandra.cluster.Cluster([host_name],
@@ -18,6 +25,7 @@ def wait_for_cassandra(host_name, wait_timeout):
                                                         local_dc='datacenter1'
                                                     )
                                                 ),
+                                                auth_provider=auth_provider
                                                 )
             cluster.connect()
 
@@ -40,21 +48,27 @@ def run():
 
     wait_for_cassandra <hostname> <wait timeout>
 
+    wait_for_cassandra <hostname> <wait timeout> <login> <password>
+
     Default hostname is localhost, and default timeout is 300 seconds''')
         sys.exit(0)
 
+    login, password = None, None
     try:
-        _, hostname, timeout = sys.argv
-        timeout = int(timeout)
+        _, hostname, timeout, login, password = sys.argv
     except ValueError:
         try:
-            _, hostname = sys.argv
-            timeout = 300
+            _, hostname, timeout = sys.argv
+            timeout = int(timeout)
         except ValueError:
-            hostname = 'localhost'
-            timeout = 300
+            try:
+                _, hostname = sys.argv
+                timeout = 300
+            except ValueError:
+                hostname = 'localhost'
+                timeout = 300
 
-    wait_for_cassandra(hostname, timeout)
+    wait_for_cassandra(hostname, timeout, login, password)
 
 
 if __name__ == '__main__':

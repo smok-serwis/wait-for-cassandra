@@ -21,3 +21,7 @@ to become available. Well, no problem with that!
 
 Default hostname is localhost, and default timeout is 5 minutes 
 (300 seconds).
+
+If you need to specify an user and a password, call this tool like this:
+
+`wait-for-cassandra <hostname> <timeout> <login> <password>`
