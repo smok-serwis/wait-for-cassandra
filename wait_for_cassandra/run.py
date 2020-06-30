@@ -30,7 +30,8 @@ def wait_for_cassandra(host_name='localhost',
                                                 )
             cluster.connect()
 
-        except (cassandra.cluster.NoHostAvailable, cassandra.UnresolvableContactPoints):
+        except (cassandra.cluster.NoHostAvailable, cassandra.UnresolvableContactPoints) as e:
+            print(repr(e))
             wait_println_counter += 3
             if wait_println_counter == 3:
                 print("Waiting 30 more seconds...")
