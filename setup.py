@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     keywords=['cassandra', 'ci', 'utility'],
-    version="1.7_a1",
+    version="1.8",
     install_requires=['cassandra-driver'],
     packages=[
         'wait_for_cassandra',

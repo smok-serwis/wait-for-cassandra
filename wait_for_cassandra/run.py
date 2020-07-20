@@ -2,11 +2,14 @@
 from __future__ import print_function
 
 import sys
+
+import cassandra
+
 from .base import get_args, get_cluster
 
 
 def wait(host_name='localhost', wait_timeout=300, login=None, password=None):
-    cluster = get_cluster(host_name, wait_timeout, login, password)
+    get_cluster(host_name, wait_timeout, login, password)
 
 
 def load(filename, host_name='localhost', wait_timeout=300, login=None, password=None):
@@ -16,7 +19,11 @@ def load(filename, host_name='localhost', wait_timeout=300, login=None, password
         data = [datum.strip() for datum in data if datum.strip()]
 
     for query in data:
-        cluster.execute(query)
+        try:
+            cluster.execute(query)
+        except cassandra.RequestExecutionException as e:
+            print('Critical error: %s found during executing %s, aborting' % (e, query))
+            sys.exit(1)
 
 
 def run():

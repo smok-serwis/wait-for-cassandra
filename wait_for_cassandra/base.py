@@ -44,11 +44,11 @@ def get_args(argv):
 
     hostname, timeout, login, password = 'localhost', 300, None, None
 
-    if len(argv) == 4:
+    if len(argv) >= 4:
         hostname, timeout, login, password = argv[:4]
-    elif len(argv) == 2:
+    elif len(argv) >= 2:
         hostname, timeout = argv[:2]
-    elif len(argv) == 1:
+    elif len(argv) >= 1:
         hostname, = argv[:1]
 
     timeout = float(timeout)
