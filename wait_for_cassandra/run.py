@@ -1,73 +1,42 @@
 # coding=UTF-8
 from __future__ import print_function
 
-import time
-import cassandra.cluster
 import sys
+from .base import get_args, get_cluster
 
-from cassandra.auth import PlainTextAuthProvider
+
+def wait(host_name='localhost', wait_timeout=300, login=None, password=None):
+    cluster = get_cluster(host_name, wait_timeout, login, password)
 
 
-def wait_for_cassandra(host_name='localhost',
-                       wait_timeout=300, login=None, password=None):
-    start_at = time.time()
-    wait_println_counter = 0
+def load(filename, host_name='localhost', wait_timeout=300, login=None, password=None):
+    cluster = get_cluster(host_name, wait_timeout, login, password)
+    with open(filename, 'r') as f_in:
+        data = f_in.read().replace('\r', ' ').replace('\n', ' ').split(';')
+        data = [datum.strip() for datum in data if datum.strip()]
 
-    auth_provider = None
-    if login is not None and password is not None:
-        auth_provider = PlainTextAuthProvider(username=login, password=password)
-
-    while time.time() - start_at < wait_timeout:
-        try:
-            cluster = cassandra.cluster.Cluster([host_name],
-                                                load_balancing_policy=
-                                                cassandra.cluster.TokenAwarePolicy(
-                                                    cassandra.cluster.DCAwareRoundRobinPolicy(
-                                                        local_dc='datacenter1'
-                                                    )
-                                                ),
-                                                auth_provider=auth_provider
-                                                )
-            cluster.connect()
-
-        except (cassandra.cluster.NoHostAvailable, cassandra.UnresolvableContactPoints) as e:
-            print(repr(e))
-            wait_println_counter += 3
-            if wait_println_counter == 3:
-                print("Waiting 30 more seconds...")
-                wait_println_counter = 0
-            time.sleep(10)
-        else:
-            sys.exit(0)
-    else:
-        print("Waiting time exceeded, aborting...")
-        sys.exit(1)
+    for query in data:
+        cluster.execute(query)
 
 
 def run():
-    if '-h' in sys.argv:
+    if '-l' in sys.argv:
+        index = sys.argv.index('-l')
+        argv = sys.argv[1:index]+sys.argv[index+2:]
+        filename = sys.argv[index+1]
+        load(filename, *get_args(argv))
+    elif '-h' in sys.argv:
         print('''Use like:
 
-    wait_for_cassandra <hostname> <wait timeout>
+        wait-for-cassandra <hostname>
+        wait-for-cassandra <hostname> <wait timeout>
+        wait-for-cassandra <hostname> <wait timeout> <login> <password>
+        wait-for-cassandra <hostname> -l <file_to_load.cql>
+        wait-for-cassandra <hostname> <wait timeout> -l <file_to_load.cql>
+        wait-for-cassandra <hostname> <wait timeout> <login> <password> -l <file_to_load.cql>
 
-    wait_for_cassandra <hostname> <wait timeout> <login> <password>
-
-    Default hostname is localhost, and default timeout is 300 seconds''')
+        Default hostname is localhost, and default timeout is 300 seconds''')
         sys.exit(0)
+    else:
+        wait(*get_args(sys.argv[1:]))
 
-    hostname, timeout, login, password = 'localhost', 300, None, None
-
-    if len(sys.argv) == 5:
-        _, hostname, timeout, login, password = sys.argv
-    elif len(sys.argv) == 3:
-        _, hostname, timeout = sys.argv
-    elif len(sys.argv) == 2:
-        _, hostname = sys.argv
-
-    timeout = float(timeout)
-
-    wait_for_cassandra(hostname, timeout, login, password)
-
-
-if __name__ == '__main__':
-    run()

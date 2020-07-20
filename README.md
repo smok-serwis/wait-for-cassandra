@@ -26,10 +26,9 @@ If you need to specify an user and a password, call this tool like this:
 
 `wait-for-cassandra <hostname> <timeout> <login> <password>`
 
-Or alternatively you can use it programmatically:
+## Executing specified CQL
 
-```python
-from wait_for_cassandra import wait_for_cassandra
+If you want to load a CQL file, just use:
 
-wait_for_cassandra('host', 300, 'login', 'password')
-```
+`wait-for-cassandra <hostname> -l <name_of_cql_file> ...`
+ 

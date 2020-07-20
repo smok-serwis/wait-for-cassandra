@@ -1,3 +1,3 @@
-from .run import wait_for_cassandra
+from .run import wait, load
 
-__all__ = ['wait_for_cassandra']
+__all__ = ['wait', 'load']
