@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import time
 
@@ -6,7 +7,7 @@ import cassandra.cluster
 from cassandra.auth import PlainTextAuthProvider
 
 
-def get_cluster(host_name='localhost', wait_timeout=300, login=None, password=None):
+def get_cluster(host_name='localhost', wait_timeout=300, login=None, password=None, quiet=False):
     start_at = time.time()
     wait_println_counter = 0
 
@@ -27,16 +28,19 @@ def get_cluster(host_name='localhost', wait_timeout=300, login=None, password=No
                                                 )
             return cluster.connect()
         except (cassandra.cluster.NoHostAvailable, cassandra.UnresolvableContactPoints) as e:
-            print(repr(e))
+            if not quiet:
+                print(repr(e))
             wait_println_counter += 3
             if wait_println_counter == 3:
-                print("Waiting 30 more seconds...")
+                if not quiet:
+                    print("Waiting 30 more seconds...")
                 wait_println_counter = 0
             time.sleep(10)
         else:
             sys.exit(0)
     else:
-        print("Waiting time exceeded, aborting...")
+        if not quiet:
+            print("Waiting time exceeded, aborting...")
         sys.exit(1)
 
 

@@ -11,4 +11,5 @@ python:
 install:
   - python setup.py install
 script:
+  - wait-for-cassandra -q
   - wait-for-cassandra

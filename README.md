@@ -32,3 +32,8 @@ If you want to load a CQL file, just use:
 
 `wait-for-cassandra <hostname> -l <name_of_cql_file> ...`
  
+## Changelog
+
+## v1.9:
+
+* added -q : the quiet switch
